@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine","ejs");
 app.use(express.static(__dirname+"/public"));
 
-seedDB(); //seed the database with starter data
+//seedDB(); //seed the database with starter data
 
 //PASPPORT CONFIG
 app.use(require("express-session")({
