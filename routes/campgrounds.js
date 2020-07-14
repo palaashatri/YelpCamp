@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Campground = require("../models/campground");
+const campground = require("../models/campground");
 
 //INDEX : Show all camgrounds from DB
 router.get("/",function(req,res){
@@ -57,19 +58,15 @@ router.get("/:id",function(req,res){
 });
 
 // edit campground route
-router.get("/:id/edit",function(req,res){
-    Campground.findById(req.params.id,function(err,foundCampground){
-        if(err){
-            res.redirect("/campgrounds");
-        } else{
+router.get("/:id/edit",checkCampgroundOwnership,function(req,res){
+        Campground.findById(req.params.id,function(err,foundCampground){
             res.render("campgrounds/edit",{campground:foundCampground});
-        }
-    });    
+        });
 });
 
+
 // update campground route
-router.put("/:id",function(req,res){
-    //find and update the correct campground
+router.put("/:id",checkCampgroundOwnership,function(req,res){
     Campground.findByIdAndUpdate(req.params.id,req.body.campground,function(err,updatedCampground){
         if(err){
             res.redirect("/campgrounds");
@@ -77,11 +74,10 @@ router.put("/:id",function(req,res){
             res.redirect("/campgrounds/" + req.body.params.id);
         }
     });
-    //redirect somewhere
 });
 
 //destroy campground route
-router.delete("/:id",function(req,res){
+router.delete("/:id",checkCampgroundOwnership,function(req,res){
     Campground.findByIdAndRemove(req.params.id,function(err){
         if(err){
             res.redirect("/campgrounds");
@@ -92,6 +88,27 @@ router.delete("/:id",function(req,res){
 });
 
 //middleware
+
+function checkCampgroundOwnership(req,res,next){
+    if(req.isAuthenticated()){
+        Campground.findById(req.params.id,function(err,foundCampground){
+            if(err){
+                res.redirect("back");
+            } else{
+                // does user own the campground?
+                if(foundCampground.author.id.equals(req.user._id)){
+                    next();
+                } else {
+                    res.redirect("back");
+                }
+                
+            }
+        });        
+    } else {
+        res.redirect("back");
+    }    
+}
+
 function isLoggedIn(req,res,next){
     if(req.isAuthenticated()){
         return next();
