@@ -3,17 +3,16 @@ var router = express.Router();
 var Campground = require("../models/campground");
 var middleware = require("../middleware");
 
-//INDEX : Show all camgrounds from DB
-router.get("/",function(req,res){
-    //GET ALL CG from DB
-    Campground.find({},function (err,allCampgrounds) {
-        if(err){
-            req.flash("error",err);
-        } else{
-            res.render("campgrounds/index",{campgrounds:allCampgrounds});
-        }
+//INDEX - show all campgrounds
+router.get("/", function(req, res){
+    // Get all campgrounds from DB
+    Campground.find({}, function(err, allCampgrounds){
+       if(err){
+           console.log(err);
+       } else {
+          res.render("campgrounds/index",{campgrounds: allCampgrounds, page: 'campgrounds'});
+       }
     });
-    
 });
 
 //CREATE ROUTE : add a new campground to DB
