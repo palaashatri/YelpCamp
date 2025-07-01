@@ -1,3 +1,5 @@
+>Marking this as deprecated and archived. Heroku, in all their almighty brilliance deleted my account, also removing all my API keys and everything. They can literally, buzz off.
+
 # YelpCamp
 > A Yelp-clone for finding camps. Made for the Colt Steele Web Dev Bootcamp.
 * Built on Node.js and MongoDB
